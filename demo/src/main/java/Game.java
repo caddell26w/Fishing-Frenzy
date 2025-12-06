@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -38,7 +39,7 @@ public class Game extends Application {
         fishArray.add(salmonFish);
 
         // Circle and buttons
-        Circle circle = new Circle(100, 100, 50, Color.ORANGE);
+        Circle circle = new Circle(50, 50, 50, Color.ORANGE);
         Button startButton = new Button("Start Game!");
         Button depthUpgradeButton = new Button("Depth");
         Button hookCapacityUpgradeButton = new Button("Hook Capacity");
@@ -58,11 +59,15 @@ public class Game extends Application {
 
         Image hook = new Image("./Sprites/Hook.png", 120, 120, true, true);
         ImageView hookIV = new ImageView(hook);
-        hookIV.setLayoutX(width / 2 - fishermanIV.getImage().getWidth() / 2 - 5);
-        hookIV.setLayoutY(waterSurfaceY - fishermanIV.getImage().getHeight() + 30);
+        System.out.println("\n" + hookIV.getFitHeight());
+        hookIV.setLayoutX(-15.0);
 
-        Pane backgroundPane = new Pane(bgIV, fishermanIV, hookIV); // background moves up and down
-        Pane gameObjectsPane = new Pane(circle, startButton); // other things on the screen
+        Line fishingLine = new Line();
+        fishingLine.setStrokeWidth(3.0);
+        fishingLine.setStroke(Color.WHITE);
+
+        Pane backgroundPane = new Pane(bgIV, fishermanIV, fishingLine); // background moves up and down
+        Pane gameObjectsPane = new Pane(hookIV, circle, startButton); // other things on the screen
         Pane gamePane = new Pane(backgroundPane, gameObjectsPane, statText);
         Circle depthCircle = new Circle(50.0, Color.ORANGE);
         Circle hookCapCircle = new Circle(50.0, Color.ORANGE);
@@ -72,7 +77,7 @@ public class Game extends Application {
 
         spawnFish(fishArray, backgroundPane);
 
-        gameObjectsPane.setLayoutY(100.0);
+        gameObjectsPane.setLayoutY(400.0);
 
         startButton.layoutXProperty().bind(circle.centerXProperty().subtract(startButton.widthProperty().divide(2)));
         startButton.layoutYProperty().bind(circle.centerYProperty().subtract(startButton.heightProperty().divide(2)));
@@ -95,8 +100,16 @@ public class Game extends Application {
         primaryStage.setTitle("Fishing Frenzy");
         primaryStage.show();
 
-        circle.setCenterX(400);
-        circle.setCenterY(400);
+        
+        fishingLine.setStartX(400.5);
+        fishingLine.setStartY(389.5);
+        gameObjectsPane.setMaxSize(100, 100);
+        gameObjectsPane.setLayoutX(400.0 - gameObjectsPane.getMaxWidth()/2);
+        System.out.println(gameObjectsPane.getLayoutX());
+        System.out.println(gameObjectsPane.getLayoutY());
+        System.out.println(hook.getHeight());
+        fishingLine.setEndX(gameObjectsPane.getLayoutX() + gameObjectsPane.getMaxWidth()/2 + 0.5);
+        fishingLine.setEndY(gameObjectsPane.getLayoutY() + gameObjectsPane.getMaxHeight() + 2.5 - hook.getHeight()/4);
 
         // Button click moves background up and back down
         startButton.setOnMouseClicked(e -> {
@@ -105,8 +118,8 @@ public class Game extends Application {
             upgradeButtons.setVisible(false);
             statText.setVisible(false);
 
-            TranslateTransition tt = new TranslateTransition(Duration.seconds(depth/100), backgroundPane);
-            tt.setOnFinished(event -> {
+            FishingTranslateTransition ftt = new FishingTranslateTransition(Duration.seconds(depth/100), backgroundPane, 0, 0, 0, -depth, fishingLine);
+            ftt.setOnFinished(event -> {
                 circle.setVisible(true);
                 startButton.setVisible(true);
                 upgradeButtons.setVisible(true);
@@ -118,10 +131,9 @@ public class Game extends Application {
                 upgradeButtons.setLayoutY(350);
                 }
             });
-            tt.setByY(-depth); // move up
-            tt.setAutoReverse(true); // then move back down
-            tt.setCycleCount(2); // up + down
-            tt.play();
+            ftt.setAutoReverse(true);
+            ftt.setCycleCount(2);
+            ftt.play();
 
         });
 
@@ -164,7 +176,6 @@ public class Game extends Application {
             double depthRange = maxDepth - minDepth;
             double depthFromSurface = Math.min(minDepth + Math.random() * depthRange, availableDepth);
             double spawnY = waterSurfaceY + depthFromSurface;
-            System.out.println(fishType.getSpritePath());
 
             Image fishImg = new Image(fishType.getSpritePath(), 80, 50, true, true);
             ImageView fishIV = new ImageView(fishImg);
