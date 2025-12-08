@@ -1,4 +1,5 @@
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Rectangle;
 
 public class Fish{
 
@@ -8,7 +9,12 @@ public class Fish{
     final double maxLivingDepth;
     final boolean isLegendary;
     final String spritePath;
+    double depth;
     ImageView fishIV;
+    double leftOfFish;
+    double rightOfFish;
+    double topOfFish;
+    double bottomOfFish;
 
     public Fish(int reward, String species, double minLivingDepth, double maxLivingDepth, boolean isLegendary, String spritePath){
         this.reward = reward;
@@ -19,8 +25,44 @@ public class Fish{
         this.spritePath = spritePath;
     }
 
+    public double getLeftOfFish() {
+        return this.leftOfFish;
+    }
+
+    public void setLeftOfFish(double leftOfFish) {
+        this.leftOfFish = leftOfFish;
+    }
+
+    public double getRightOfFish() {
+        return this.rightOfFish;
+    }
+
+    public void setRightOfFish(double rightOfFish) {
+        this.rightOfFish = rightOfFish;
+    }
+
+    public double getTopOfFish() {
+        return this.topOfFish;
+    }
+
+    public void setTopOfFish(double topOfFish) {
+        this.topOfFish = topOfFish;
+    }
+
+    public double getBottomOfFish() {
+        return this.bottomOfFish;
+    }
+
+    public void setBottomOfFish(double bottomOfFish) {
+        this.bottomOfFish = bottomOfFish;
+    }
+
     public int getReward(){
         return this.reward;
+    }
+
+    public String getSpecies() {
+        return this.species;
     }
 
     public double getMinLivingDepth(){
@@ -47,6 +89,13 @@ public class Fish{
         this.fishIV = fishIV;
     }
 
+    public Double getDepth() {
+        return this.depth;
+    }
+
+    public void setDepth(double depth) {
+        this.depth = depth;
+    }
 
 }
 
