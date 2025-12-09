@@ -50,5 +50,21 @@ public class FishTranslateTransition extends Transition {
             this.fish.leftOfFish = currentX;
             this.fish.rightOfFish = currentX + this.image.getWidth();
         }
+        else if (this.fish.species == "Angler Fish") {
+            this.fish.leftOfFish = currentX + 2;
+            this.fish.rightOfFish = currentX + this.image.getWidth() - 2;
+        }
+        else if (this.fish.species == "Butterfly Fish") {
+            this.fish.leftOfFish = currentX + 2;
+            this.fish.rightOfFish = currentX + this.image.getWidth() - 1;
+        }
+        else if (this.fish.species == "Yellow Tang") {
+            this.fish.leftOfFish = currentX + 5;
+            this.fish.rightOfFish = currentX + this.image.getWidth() - 5;
+        }
+        // Line line = new Line(currentX + this.image.getWidth() - 5, 0, currentX + this.image.getWidth() - 5, 1000);
+        // Pane pane = (Pane) this.iv.getParent();
+        // pane.getChildren().add(line);
+        // stop();
     }
 }

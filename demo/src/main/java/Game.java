@@ -23,17 +23,19 @@ public class Game extends Application {
 
     private double depth = 200.0;
     private int hookCapacity = 10;
-    private double maxDepth = 800.0;
-    private double maxHookCapacity = 20;
+    private double maxDepth = 5600.0;
+    private int maxHookCapacity = 20;
 
     double width = 800;
-    double height = 1600;
+    double height = 25600;
     double sceneHeight = 800;
     double waterSurfaceY = sceneHeight / 2 + 85.0;
     double waterBottomPadding = 60.0;
-    int amountOfFish = (int) (Math.random() * 20) + 10;
-    int amountOfTuna = (int) (Math.random() * amountOfFish/2) + 5;
-    int amountOfSalmon = amountOfFish - amountOfTuna;
+    int amountOfTuna = (int) (Math.random() * 10) + 10;
+    int amountOfSalmon = (int) (Math.random() * 10) + 10;
+    int amountOfButterflyFish = (int) (Math.random() * 10) + 10;;
+    int amountOfYellowTang = (int) (Math.random() * 10) + 10;;
+    int amountOfAnglerFish = (int) (Math.random() * 10) + 10;;
 
     int money = 0;
     Text moneyText = new Text("Money: $0");
@@ -47,12 +49,24 @@ public class Game extends Application {
     public void start(Stage primaryStage) {
 
         for (int i = 1; i <= amountOfTuna; i++) {
-            Fish tunaFish = new Fish(20, "Tuna", 50.0, 400.0, false, "./Sprites/tuna-fish.png");
+            Fish tunaFish = new Fish(20, "Tuna", 25.0, 1145.0, false, "./Sprites/Fish/tuna-fish.png");
             fishArray.add(tunaFish);
         }
-        for (int j = 1; j <= amountOfSalmon; j++) {
-            Fish salmonFish = new Fish (40, "Salmon", 400.0, 800.0, false, "./Sprites/salmon-fish.png");
+        for (int j = 1; j <= amountOfButterflyFish; j++) {
+            Fish butterflyFish = new Fish(30, "Butterfly Fish", 1145.0, 2265.0, false, "./Sprites/Fish/butterflyFish.png");
+            fishArray.add(butterflyFish);
+        }
+        for (int k = 1; k <= amountOfSalmon; k++) {
+            Fish salmonFish = new Fish (40, "Salmon", 2265.0, 3385.0, false, "./Sprites/Fish/salmon-fish.png");
             fishArray.add(salmonFish);
+        }
+        for (int l = 1; l <= amountOfYellowTang; l++) {
+            Fish yellowTang = new Fish(45, "Yellow Tang", 3385.0, 4505.0, false, "./Sprites/Fish/yellowTang.png");
+            fishArray.add(yellowTang);
+        }
+        for (int m = 1; m <= amountOfAnglerFish; m++) {
+            Fish anglerFish = new Fish(60, "Angler Fish", 4505.0, 5625.0, false, "./Sprites/Fish/anglerFish.png");
+            fishArray.add(anglerFish);
         }
 
         // Circle and buttons
@@ -65,7 +79,7 @@ public class Game extends Application {
 
         Text statText = new Text(550,50,"Max Depth: "+depth+" \nHook Capacity: "+hookCapacity+" Fish");
         moneyText.setLayoutY(30);
-        moneyText.setLayoutX(width / 2 - 30);
+        moneyText.setLayoutX(width / 2 - moneyText.getLayoutBounds().getWidth() / 2);
 
         // Background images
         Image background = new Image("./Sprites/longerBG.png", width, height, true, true);
@@ -143,7 +157,7 @@ public class Game extends Application {
             hook.setBottomOfHook(hookIV.getLayoutY() + hookImg.getHeight() - 20.5);
 
             FishingTranslateTransition down = new FishingTranslateTransition(Duration.seconds(1), backgroundPane, 0, 0, 0, -maxDepth, hookImg, hookIV, hook, fishArray, fishingLine);
-            FishingTranslateTransition up = new FishingTranslateTransition(Duration.seconds(depth/50), backgroundPane, 0, -maxDepth, 0, 0, hookImg, hookIV, hook, fishArray, fishingLine);
+            FishingTranslateTransition up = new FishingTranslateTransition(Duration.seconds(maxDepth/200), backgroundPane, 0, -maxDepth, 0, 0, hookImg, hookIV, hook, fishArray, fishingLine);
             FishingAnimationTimer ft = new FishingAnimationTimer(fishArray, hook);
             scene.setOnKeyPressed((KeyEvent event) -> {
                 if (up.getStatus() == Status.RUNNING) {
@@ -235,12 +249,12 @@ public class Game extends Application {
     public void spawnFish(ArrayList<Fish> fishArray, Pane parent){
         for (Fish fishType : fishArray){
 
-            double maxDepth = fishType.getMaxLivingDepth();
-            double minDepth = fishType.getMinLivingDepth();
+            double maxLivingDepth = fishType.getMaxLivingDepth();
+            double minLivingDepth = fishType.getMinLivingDepth();
 
-            double availableDepth = sceneHeight;
-            double depthRange = maxDepth - minDepth;
-            double depthFromSurface = Math.min(minDepth + Math.random() * depthRange, availableDepth);
+            double availableDepth = maxDepth;
+            double depthRange = maxLivingDepth - minLivingDepth;
+            double depthFromSurface = Math.min(minLivingDepth + Math.random() * depthRange, availableDepth);
             double spawnY = waterSurfaceY + depthFromSurface;
             fishType.depth = spawnY;
 
@@ -255,13 +269,28 @@ public class Game extends Application {
                 fishType.topOfFish = fishType.depth + 10.5;
                 fishType.bottomOfFish = fishType.depth + fishImg.getHeight() - 12;
             }
+            else if (fishType.species == "Angler Fish") {
+                fishType.topOfFish = fishType.depth + 5;
+                fishType.bottomOfFish = fishType.depth + fishImg.getHeight() - 5;
+            }
+            else if (fishType.species == "Butterfly Fish") {
+                fishType.topOfFish = fishType.depth + 1;
+                fishType.bottomOfFish = fishType.depth + fishImg.getHeight();
+            }
+            else if (fishType.species == "Yellow Tang") {
+                fishType.topOfFish = fishType.depth + 5;
+                fishType.bottomOfFish = fishType.depth + fishImg.getHeight() - 4;
+            }
 
             fishIV.setY(spawnY);
 
             boolean startOnLeft = Math.random() < 0.5;
 
+            //Line line = new Line(0, fishType.depth + fishImg.getHeight() - 4, 1000, fishType.depth + fishImg.getHeight() - 4);
+
             fishType.setImageView(fishIV);
             parent.getChildren().add(fishIV);
+            //parent.getChildren().add(line);
 
             FishTranslateTransition fish = new FishTranslateTransition(Duration.seconds(2), fishIV, fishImg, fishType);
 
