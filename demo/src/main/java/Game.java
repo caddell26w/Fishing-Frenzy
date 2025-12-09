@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 
-import javafx.scene.input.KeyEvent;
 import javafx.animation.Animation.Status;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -9,6 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -177,6 +179,15 @@ public class Game extends Application {
                             fishingLine.setEndX(fishingLine.getEndX() + 7);
                         }
                     }
+                }
+            });
+            hookIV.setOnMouseDragged((MouseEvent event) -> {
+                if (up.getStatus() == Status.RUNNING && event.getButton() == MouseButton.PRIMARY) {
+                        hookIV.setLayoutX(event.getSceneX()-400);
+                        hook.setLeftOfHook(hookIV.getLayoutX() + 51.5);
+                        hook.setRightOfHook(hookIV.getLayoutX() + hookImg.getWidth() - 51.5);
+                        double hookCenterX = gameObjectsPane.getLayoutX() + hookIV.getLayoutX() + hookImg.getWidth() / 2;
+                        fishingLine.setEndX(hookCenterX+7);
                 }
             });
             down.setOnFinished(event -> {
