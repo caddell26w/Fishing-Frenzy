@@ -1,5 +1,4 @@
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Rectangle;
 
 public class Fish{
 

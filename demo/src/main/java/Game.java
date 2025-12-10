@@ -15,8 +15,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -25,8 +27,10 @@ public class Game extends Application {
 
     private double depth = 200.0;
     private int hookCapacity = 10;
-    private double maxDepth = 5600.0;
-    private int maxHookCapacity = 20;
+    final double maxDepth = 5600.0;
+    final int maxHookCapacity = 20;
+
+    int collectedFish = 0;
 
     double width = 800;
     double height = 25600;
@@ -41,6 +45,11 @@ public class Game extends Application {
 
     int money = 0;
     Text moneyText = new Text("Money: $0");
+    Font statFont = new Font("Comic Sans MS", 40);
+
+    Text fishStorage;
+    FishingTranslateTransition upTransition;
+
     int depthUpgradeCost = 50;
     int hookUpgradeCost = 100;
     
@@ -79,9 +88,15 @@ public class Game extends Application {
         double depthIncreaseAmount = 50.0;
         int hookCapacityIncreaseAmount = 2;
 
-        Text statText = new Text(550,50,"Max Depth: "+depth+" \nHook Capacity: "+hookCapacity+" Fish");
-        moneyText.setLayoutY(30);
-        moneyText.setLayoutX(width / 2 - moneyText.getLayoutBounds().getWidth() / 2);
+        Text statText = new Text(0,150,"Max Depth: "+depth+" \nHook Capacity: "+hookCapacity+" Fish");
+        statText.setFont(statFont);
+        moneyText.setLayoutY(50);
+        moneyText.setLayoutX(0);
+        moneyText.setFont(statFont);
+
+        fishStorage = new Text(width-175,sceneHeight-25, collectedFish+ " / " + hookCapacity + " Fish collected");
+        fishStorage.setVisible(false);
+        fishStorage.setFill(Paint.valueOf("White"));
 
         // Background images
         Image background = new Image("./Sprites/longerBG.png", width, height, true, true);
@@ -103,7 +118,7 @@ public class Game extends Application {
 
         Pane backgroundPane = new Pane(bgIV, fishermanIV, fishingLine); // background moves up and down
         Pane gameObjectsPane = new Pane(hookIV, circle, startButton); // other things on the screen
-        Pane gamePane = new Pane(backgroundPane, gameObjectsPane, statText, moneyText);
+        Pane gamePane = new Pane(backgroundPane, gameObjectsPane, statText, moneyText, fishStorage);
         Circle depthCircle = new Circle(50.0, Color.ORANGE);
         Circle hookCapCircle = new Circle(50.0, Color.ORANGE);
         Pane depthPane = new Pane(depthCircle, depthUpgradeButton);
@@ -152,17 +167,20 @@ public class Game extends Application {
             circle.setVisible(false);
             upgradeButtons.setVisible(false);
             statText.setVisible(false);
+            fishStorage.setVisible(true);
+            collectedFish = 0;
+            updateCollectedText(fishStorage);
 
             hook.setLeftOfHook(hookIV.getLayoutX() + 51.5);
             hook.setRightOfHook(hookIV.getLayoutX() + hookImg.getWidth() - 51.5);
             hook.setTopOfHook(hookIV.getLayoutY() + 73.5);
             hook.setBottomOfHook(hookIV.getLayoutY() + hookImg.getHeight() - 20.5);
 
-            FishingTranslateTransition down = new FishingTranslateTransition(Duration.seconds(1), backgroundPane, 0, 0, 0, -maxDepth, hookImg, hookIV, hook, fishArray, fishingLine);
-            FishingTranslateTransition up = new FishingTranslateTransition(Duration.seconds(maxDepth/200), backgroundPane, 0, -maxDepth, 0, 0, hookImg, hookIV, hook, fishArray, fishingLine);
-            FishingAnimationTimer ft = new FishingAnimationTimer(fishArray, hook);
+            FishingTranslateTransition downTransition = new FishingTranslateTransition(Duration.seconds(1), backgroundPane, 0, 0, 0, -maxDepth, hookImg, hookIV, hook, fishArray, fishingLine);
+            upTransition = new FishingTranslateTransition(Duration.seconds(maxDepth/200), backgroundPane, 0, -maxDepth, 0, 0, hookImg, hookIV, hook, fishArray, fishingLine);
+            FishingAnimationTimer ft = new FishingAnimationTimer(fishArray, hook, this);
             scene.setOnKeyPressed((KeyEvent event) -> {
-                if (up.getStatus() == Status.RUNNING) {
+                if (upTransition.getStatus() == Status.RUNNING) {
                     if (event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.A) {
                         if (hookIV.getLayoutX() >= -169.0) {
                             hookIV.setLayoutX(hookIV.getLayoutX() - 7);
@@ -182,19 +200,23 @@ public class Game extends Application {
                 }
             });
             hookIV.setOnMouseDragged((MouseEvent event) -> {
-                if (up.getStatus() == Status.RUNNING && event.getButton() == MouseButton.PRIMARY) {
-                        hookIV.setLayoutX(event.getSceneX()-400);
+                if (upTransition.getStatus() == Status.RUNNING && event.getButton() == MouseButton.PRIMARY) {
+                    if(-175.0 <= hookIV.getLayoutX() && hookIV.getLayoutX() <= 152){
+                        double hookBounds = Math.max(-175, Math.min(152, event.getSceneX() - 400));
+                        hookIV.setLayoutX(hookBounds);
                         hook.setLeftOfHook(hookIV.getLayoutX() + 51.5);
                         hook.setRightOfHook(hookIV.getLayoutX() + hookImg.getWidth() - 51.5);
                         double hookCenterX = gameObjectsPane.getLayoutX() + hookIV.getLayoutX() + hookImg.getWidth() / 2;
                         fishingLine.setEndX(hookCenterX+7);
+                    }
+
                 }
             });
-            down.setOnFinished(event -> {
+            downTransition.setOnFinished(event -> {
                 ft.start();
-                up.play();
+                upTransition.play();
             });
-            up.setOnFinished(event -> {
+            upTransition.setOnFinished(event -> {
                 ft.stop();
                 circle.setVisible(true);
                 startButton.setVisible(true);
@@ -203,6 +225,9 @@ public class Game extends Application {
                 statText.setVisible(true);
                 hookIV.setLayoutX(-15.0);
                 fishingLine.setEndX(400.5);
+                fishStorage.setVisible(false);
+                collectedFish = 0;
+                updateCollectedText(fishStorage);
                 for (Fish fish : fishArray) {
                     if (fish.getImageView().isVisible() == false){
                         money += fish.getReward();
@@ -217,7 +242,7 @@ public class Game extends Application {
                     upgradeButtons.setLayoutY(350);
                 }
             });
-            down.play();
+            downTransition.play();
         });
 
         depthUpgradeButton.setOnMouseClicked(e -> {
@@ -327,9 +352,30 @@ public class Game extends Application {
         updateMoneyText();
     }
 
+    public boolean isCapacityReached() {
+        return collectedFish >= hookCapacity;
+    }
+
+    public void onFishCaught(Fish fish) {
+        if (isCapacityReached()) {
+            return;
+        }
+        fish.getImageView().setVisible(false);
+        collectedFish++;
+        updateCollectedText(fishStorage);
+        if (isCapacityReached() && upTransition != null) {
+            upTransition.setRate(15.0);
+        }
+    }
+
     public void updateMoneyText() {
         moneyText.setText("Money: $" + money);
         moneyText.toFront();
+    }
+
+    public void updateCollectedText(Text fishStorage){
+        fishStorage.setText(collectedFish+ " / " + hookCapacity + " Fish collected");
+        fishStorage.toFront();
     }
 
     public void updateUpgradeButtonLabels(Button depthUpgradeButton, Button hookCapacityUpgradeButton) {
