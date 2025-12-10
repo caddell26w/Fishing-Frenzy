@@ -295,11 +295,12 @@ public class Game extends Application {
             FishTranslateTransition fish = new FishTranslateTransition(Duration.seconds(2), fishIV, fishImg, fishType);
 
             if (startOnLeft) {
+                // fish.setStartX(225);
                 fish.setStartX(225);
-                fish.setEndX(495);
+                fish.setEndX(500);
             }
             else {
-                fish.setStartX(495);
+                fish.setStartX(500);
                 fish.setEndX(225);
                 fishIV.setScaleX(-1);
             }
