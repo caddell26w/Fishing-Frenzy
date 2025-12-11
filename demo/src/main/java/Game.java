@@ -1,3 +1,8 @@
+// Fundamentals of Object-Oriented Design Final Project
+// Jackson Bizzell and Wesley Caddell
+// 12/11/2025
+// This program is a JavaFX game that allows the user to fish via (a, d, arrow keys, or mouse click + drag) and upgrade their abilities
+// Academic Honesty Pledge (I agree to abide by the Academic Honesty Agreement.)
 import java.util.ArrayList;
 
 import javafx.animation.Animation.Status;
@@ -40,7 +45,6 @@ public class Game extends Application {
     double height = 25600;
     double sceneHeight = 800;
     double waterSurfaceY = sceneHeight / 2 + 85.0;
-    double waterBottomPadding = 60.0;
     int amountOfTuna = (int) (Math.random() * 10) + 10;
     int amountOfSalmon = (int) (Math.random() * 10) + 10;
     int amountOfButterflyFish = (int) (Math.random() * 10) + 10;;
@@ -103,7 +107,7 @@ public class Game extends Application {
 
         goldenFishEffect = goldenGlow;
 
-        // Circle and buttons
+        // Circle and text
         Circle startCircle = new Circle(50, 50, 50, Color.ORANGE);
         Text startText = new Text("Start Game!");
         Text depthText = new Text("Depth ($" + depthUpgradeCost + ")");
@@ -199,8 +203,8 @@ public class Game extends Application {
             hook.setTopOfHook(hookIV.getLayoutY() + 73.5);
             hook.setBottomOfHook(hookIV.getLayoutY() + hookImg.getHeight() - 20.5);
 
-            FishingTranslateTransition downTransition = new FishingTranslateTransition(Duration.seconds(1), backgroundPane, 0, 0, 0, -maxDepth, hookImg, hookIV, hook, fishArray, fishingLine);
-            upTransition = new FishingTranslateTransition(Duration.seconds(maxDepth/200), backgroundPane, 0, -maxDepth, 0, 0, hookImg, hookIV, hook, fishArray, fishingLine);
+            FishingTranslateTransition downTransition = new FishingTranslateTransition(Duration.seconds(1), backgroundPane, 0, 0, 0, -depth, hookImg, hookIV, hook, fishArray, fishingLine);
+            upTransition = new FishingTranslateTransition(Duration.seconds(depth/200), backgroundPane, 0, -depth, 0, 0, hookImg, hookIV, hook, fishArray, fishingLine);
             FishingAnimationTimer ft = new FishingAnimationTimer(fishArray, hook, this);
             scene.setOnKeyPressed((KeyEvent event) -> {
                 if (upTransition.getStatus() == Status.RUNNING) {
@@ -305,6 +309,7 @@ public class Game extends Application {
     }
 
     public void spawnFish(ArrayList<Fish> fishArray, Pane parent){
+        int counter = 0;
         for (Fish fishType : fishArray){
             double maxLivingDepth = fishType.getMaxLivingDepth();
             double minLivingDepth = fishType.getMinLivingDepth();
@@ -315,6 +320,10 @@ public class Game extends Application {
             double depthRange = maxLivingDepth - minLivingDepth;
             double depthFromSurface = Math.min(minLivingDepth + Math.random() * depthRange, availableDepth);
             double spawnY = waterSurfaceY + depthFromSurface;
+            if (counter == 0 && fishType.getSpecies().equals("Tuna")) {
+                spawnY = waterSurfaceY + 35;
+                counter++;
+            }
             fishType.depth = spawnY;
 
             Image fishImg = new Image(fishType.getSpritePath(), 80, 50, true, true);
@@ -350,11 +359,8 @@ public class Game extends Application {
 
             boolean startOnLeft = Math.random() < 0.5;
 
-            //Line line = new Line(0, fishType.depth + fishImg.getHeight() - 4, 1000, fishType.depth + fishImg.getHeight() - 4);
-
             fishType.setImageView(fishIV);
             parent.getChildren().add(fishIV);
-            //parent.getChildren().add(line);
 
             FishTranslateTransition fish = new FishTranslateTransition(Duration.seconds((Math.random() * 1.5) + 2), fishIV, fishImg, fishType);
 

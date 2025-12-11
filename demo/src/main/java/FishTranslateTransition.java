@@ -46,29 +46,25 @@ public class FishTranslateTransition extends Transition {
         }
         double currentX = startX + (endX - startX) * frac;
         this.iv.setTranslateX(currentX);
-        if (this.fish.species == "Salmon") {
+        if (this.fish.species.equals("Salmon")) {
             this.fish.leftOfFish = currentX + 7;
             this.fish.rightOfFish = currentX + this.image.getWidth() - 6.75;
         }
-        else if (this.fish.species == "Tuna") {
+        else if (this.fish.species.equals("Tuna")) {
             this.fish.leftOfFish = currentX;
             this.fish.rightOfFish = currentX + this.image.getWidth();
         }
-        else if (this.fish.species == "Angler Fish") {
+        else if (this.fish.species.equals("Angler Fish")) {
             this.fish.leftOfFish = currentX + 2;
             this.fish.rightOfFish = currentX + this.image.getWidth() - 2;
         }
-        else if (this.fish.species == "Butterfly Fish") {
+        else if (this.fish.species.equals("Butterfly Fish")) {
             this.fish.leftOfFish = currentX + 2;
             this.fish.rightOfFish = currentX + this.image.getWidth() - 1;
         }
-        else if (this.fish.species == "Yellow Tang") {
+        else if (this.fish.species.equals("Yellow Tang")) {
             this.fish.leftOfFish = currentX + 5;
             this.fish.rightOfFish = currentX + this.image.getWidth() - 5;
         }
-        // Line line = new Line(currentX + this.image.getWidth() - 5, 0, currentX + this.image.getWidth() - 5, 1000);
-        // Pane pane = (Pane) this.iv.getParent();
-        // pane.getChildren().add(line);
-        // stop();
     }
 }
