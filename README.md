@@ -87,5 +87,5 @@ Fishing Frenzy is a game that can be run on all computers from anywhere in the w
 - [Yellow Tang](https://www.freepik.com/premium-vector/yellow-tang-fish-pixel-art-style_22776985.htm#from_element=cross_selling__vector)
 
 ## 6. Authors:
-- Jackson Bizzell @J-Bizzy
-- Wesley Caddell @caddell26w/@caddellw
+- Jackson Bizzell [@J-Bizzy](https://github.com/J-Bizzy)
+- Wesley Caddell [@caddell26w](https://github.com/caddell26w)/[@caddellw](https://github.com/caddellw)
