@@ -6,7 +6,7 @@ public class Fish{
     final String species;
     final double minLivingDepth;
     final double maxLivingDepth;
-    final boolean isLegendary;
+    boolean isLegendary;
     final String spritePath;
     double depth;
     ImageView fishIV;
@@ -57,6 +57,9 @@ public class Fish{
     }
 
     public int getReward(){
+        if(this.isLegendary){
+            return this.reward * 5;
+        }
         return this.reward;
     }
 
@@ -74,6 +77,10 @@ public class Fish{
 
     public boolean isLegendary(){
         return this.isLegendary;
+    }
+
+    public void setLegendary(boolean isLegendary){
+        this.isLegendary = isLegendary;
     }
 
     public String getSpritePath(){

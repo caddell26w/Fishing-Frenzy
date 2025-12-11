@@ -5,6 +5,10 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.effect.Bloom;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Effect;
+import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -27,9 +31,9 @@ import javafx.util.Duration;
 public class Game extends Application {
 
     private double depth = 200.0;
-    private int hookCapacity = 10;
+    private int hookCapacity = 3;
     final double maxDepth = 5600.0;
-    final int maxHookCapacity = 20;
+    final int maxHookCapacity = 50;
 
     int collectedFish = 0;
 
@@ -46,8 +50,7 @@ public class Game extends Application {
 
     int money = 0;
     Text moneyText = new Text("Money: $0");
-    Font statFont = new Font("Comic Sans MS", 40);
-    Font buttonFont = new Font("Comic Sans MS", 12);
+    Font statFont = new Font("Times", 40);
 
     Text fishStorage;
     FishingTranslateTransition upTransition;
@@ -57,6 +60,8 @@ public class Game extends Application {
     
 
     ArrayList<Fish> fishArray = new ArrayList<>();
+
+    Effect goldenFishEffect;
 
     @Override
     public void start(Stage primaryStage) {
@@ -81,6 +86,22 @@ public class Game extends Application {
             Fish anglerFish = new Fish(60, "Angler Fish", 4505.0, 5625.0, false, "./Sprites/Fish/anglerFish.png");
             fishArray.add(anglerFish);
         }
+
+        ColorAdjust desaturate = new ColorAdjust();
+        desaturate.setSaturation(-1.0);
+        SepiaTone sepiaTone = new SepiaTone(0.9);
+        sepiaTone.setInput(desaturate);
+        ColorAdjust goldTint = new ColorAdjust();
+        goldTint.setHue(0.08);
+        goldTint.setSaturation(0.4);
+        goldTint.setBrightness(0.25);
+        goldTint.setContrast(0.05);
+        goldTint.setInput(sepiaTone);
+
+        Bloom goldenGlow = new Bloom(0.25);
+        goldenGlow.setInput(goldTint);
+
+        goldenFishEffect = goldenGlow;
 
         // Circle and buttons
         Circle startCircle = new Circle(50, 50, 50, Color.ORANGE);
@@ -288,6 +309,8 @@ public class Game extends Application {
             double maxLivingDepth = fishType.getMaxLivingDepth();
             double minLivingDepth = fishType.getMinLivingDepth();
 
+ 
+
             double availableDepth = maxDepth;
             double depthRange = maxLivingDepth - minLivingDepth;
             double depthFromSurface = Math.min(minLivingDepth + Math.random() * depthRange, availableDepth);
@@ -296,6 +319,11 @@ public class Game extends Application {
 
             Image fishImg = new Image(fishType.getSpritePath(), 80, 50, true, true);
             ImageView fishIV = new ImageView(fishImg);
+
+            if (Math.random()<0.2){
+                fishIV.setEffect(goldenFishEffect);
+                fishType.setLegendary(true);
+            }
 
             if (fishType.species == "Salmon") {
                 fishType.topOfFish = fishType.depth + 6;
