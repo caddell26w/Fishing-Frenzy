@@ -85,10 +85,7 @@ Fishing Frenzy is a game that can be run on all computers from anywhere in the w
 - [Salmon](https://www.vecteezy.com/vector-art/27711801-a-single-fish-in-pixel-art-style)
 - [Tuna](https://www.freepik.com/premium-vector/tuna-fish-icon-pixel-art-illustration-8-bit_33501191.htm)
 - [Yellow Tang](https://www.freepik.com/premium-vector/pixel-art-puffer-fish-design_250779490.htm)
-<<<<<<< HEAD
 
 ## 6. Authors:
 - Jackson Bizzell @J-Bizzy
 - Wesley Caddell @caddell26w/@caddellw
-=======
->>>>>>> bdd90530d476447e71c2daf1f2bf392c32f525cc
