@@ -21,7 +21,7 @@ Fishing Frenzy is a game that can be run on all computers from anywhere in the w
   - Different value per variety :heavy_check_mark:
   - Chance for golden fish (2x value) :heavy_check_mark:
 - Implement a character that the player will act as :heavy_check_mark:
-- When a fish comes in contact with a hook, it should become attached to the hook (Added to counter and turned invisble) :heavy_check_mark: 
+- When a fish comes in contact with a hook, it should become attached to the hook (Added to counter and turned invisible) :heavy_check_mark: 
 - Implement a limit that stops the fish from attaching to the hook if the limit is met :heavy_check_mark:
 - Implement a maximum depth for the hook, and make it so that the farther down the line goes, the more valuable the fish gets :heavy_check_mark:
 - Add simple designs to the fish, boat, fisherman, and backdrop to create a vivid game environment. :heavy_check_mark:
