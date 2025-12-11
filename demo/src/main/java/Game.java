@@ -50,7 +50,8 @@ public class Game extends Application {
 
     int money = 0;
     Text moneyText = new Text("Money: $0");
-    Font statFont = new Font("Times", 40);
+    Font statFont = new Font("Comic Sans MS", 40);
+    Font buttonFont = new Font("Comic Sans MS", 12);
 
     Text fishStorage;
     FishingTranslateTransition upTransition;
