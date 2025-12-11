@@ -45,6 +45,7 @@ public class Game extends Application {
     double height = 25600;
     double sceneHeight = 800;
     double waterSurfaceY = sceneHeight / 2 + 85.0;
+    // Randomly creates a number of each fish from 10-20
     int amountOfTuna = (int) (Math.random() * 10) + 10;
     int amountOfSalmon = (int) (Math.random() * 10) + 10;
     int amountOfButterflyFish = (int) (Math.random() * 10) + 10;;
@@ -69,7 +70,7 @@ public class Game extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
+        // Creates all fish and adds them to the array
         for (int i = 1; i <= amountOfTuna; i++) {
             Fish tunaFish = new Fish(20, "Tuna", 25.0, 1145.0, false, "./Sprites/Fish/tuna-fish.png");
             fishArray.add(tunaFish);
@@ -91,6 +92,7 @@ public class Game extends Application {
             fishArray.add(anglerFish);
         }
 
+        // Creates the "gold" effect to every few fish
         ColorAdjust desaturate = new ColorAdjust();
         desaturate.setSaturation(-1.0);
         SepiaTone sepiaTone = new SepiaTone(0.9);
@@ -124,6 +126,7 @@ public class Game extends Application {
         moneyText.setLayoutX(0);
         moneyText.setFont(statFont);
 
+        // Shows the number of fish caught out of your fish cap
         fishStorage = new Text(width-175,sceneHeight-25, collectedFish+ " / " + hookCapacity + " Fish collected");
         fishStorage.setVisible(false);
         fishStorage.setFill(Paint.valueOf("White"));
@@ -146,6 +149,7 @@ public class Game extends Application {
         fishingLine.setStrokeWidth(3.0);
         fishingLine.setStroke(Color.WHITE);
 
+        // Create all panes, circles, and HBoxes for moving/displaying items
         Pane backgroundPane = new Pane(bgIV, fishermanIV, fishingLine); // background moves up and down
         Pane gameObjectsPane = new Pane(hookIV, startCircle, startText); // other things on the screen
         Pane gamePane = new Pane(backgroundPane, gameObjectsPane, statText, moneyText, fishStorage);
@@ -155,18 +159,22 @@ public class Game extends Application {
         Pane hookCapPane = new Pane(hookCapacityCircle, hookCapacityText);
         HBox upgradeButtons = new HBox(depthPane, hookCapPane);
 
+        // Spawns all the fish
         spawnFish(fishArray, backgroundPane);
 
         updateMoneyText();
 
         gameObjectsPane.setLayoutY(400.0);
 
+        // Binds location of startText to the center of the startCircle
         startText.layoutXProperty().bind(startCircle.centerXProperty().subtract(startText.getLayoutBounds().getWidth()/2));
         startText.layoutYProperty().bind(startCircle.centerYProperty().add(startText.getLayoutBounds().getHeight()/4));
 
+        // Binds location of depthText to the center of the depthCircle
         depthText.layoutXProperty().bind(depthCircle.centerXProperty().subtract(depthText.getLayoutBounds().getWidth()/2));
         depthText.layoutYProperty().bind(depthCircle.centerYProperty().add(depthText.getLayoutBounds().getHeight()/4));
 
+        // Binds location of hookCapacityText to the center of the hookCapacityCircle
         hookCapacityText.layoutXProperty().bind(hookCapacityCircle.centerXProperty().subtract(hookCapacityText.getLayoutBounds().getWidth()/2));
         hookCapacityText.layoutYProperty().bind(hookCapacityCircle.centerYProperty().add(hookCapacityText.getLayoutBounds().getHeight()/4));
 
@@ -177,6 +185,7 @@ public class Game extends Application {
         Scene scene = new Scene(root, width, sceneHeight);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Fishing Frenzy");
+        //Launches the game
         primaryStage.show();
 
         
@@ -187,7 +196,7 @@ public class Game extends Application {
         fishingLine.setEndX(gameObjectsPane.getLayoutX() + gameObjectsPane.getMaxWidth()/2 + 0.5);
         fishingLine.setEndY(gameObjectsPane.getLayoutY() + gameObjectsPane.getMaxHeight() + 2.5 - hookImg.getHeight()/4);
 
-        // Button click moves background up and back down
+        // startCircle click moves background up and back down
         startCircle.setOnMouseClicked(e -> {
             scene.getRoot().requestFocus();
             startText.setVisible(false);
@@ -203,11 +212,14 @@ public class Game extends Application {
             hook.setTopOfHook(hookIV.getLayoutY() + 73.5);
             hook.setBottomOfHook(hookIV.getLayoutY() + hookImg.getHeight() - 20.5);
 
+            // Moves the image down quickly
             FishingTranslateTransition downTransition = new FishingTranslateTransition(Duration.seconds(1), backgroundPane, 0, 0, 0, -depth, hookImg, hookIV, hook, fishArray, fishingLine);
+            // Moves the image up quickly
             upTransition = new FishingTranslateTransition(Duration.seconds(depth/200), backgroundPane, 0, -depth, 0, 0, hookImg, hookIV, hook, fishArray, fishingLine);
             FishingAnimationTimer ft = new FishingAnimationTimer(fishArray, hook, this);
             scene.setOnKeyPressed((KeyEvent event) -> {
                 if (upTransition.getStatus() == Status.RUNNING) {
+                    // Move the hook left or right via a, d, or left and right arrow keys
                     if (event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.A) {
                         if (hookIV.getLayoutX() >= -169.0) {
                             hookIV.setLayoutX(hookIV.getLayoutX() - 7);
@@ -227,6 +239,7 @@ public class Game extends Application {
                 }
             });
             hookIV.setOnMouseDragged((MouseEvent event) -> {
+                // Allows for mouse dragging of the hook
                 if (upTransition.getStatus() == Status.RUNNING && event.getButton() == MouseButton.PRIMARY) {
                     if(-175.0 <= hookIV.getLayoutX() && hookIV.getLayoutX() <= 152){
                         double hookBounds = Math.max(-175, Math.min(152, event.getSceneX() - 400));
@@ -256,11 +269,13 @@ public class Game extends Application {
                 updateCollectedText(fishStorage);
                 for (Fish fish : fishArray) {
                     if (fish.getImageView().isVisible() == false){
+                        // Add money for the caught fish
                         money += fish.getReward();
                         fish.getImageView().setVisible(true);
                     }
                 }
                 updateMoneyText();
+                // Add the upgrade button as children
                 if (gamePane.getChildren().size() == 5) { //Update if elements are added to gamePane -> Prevents upgrade buttons from being added multiple times
                     gamePane.getChildren().add(upgradeButtons);
                     upgradeButtons.setSpacing(110.0);
@@ -272,6 +287,7 @@ public class Game extends Application {
         });
 
         depthCircle.setOnMouseClicked(e -> {
+            // Depth button to increase depth
             if (money >= depthUpgradeCost) {
                 money -= depthUpgradeCost;
                 setDepth(depthIncreaseAmount);
@@ -284,6 +300,7 @@ public class Game extends Application {
 
 
         hookCapacityCircle.setOnMouseClicked(e -> {
+            // Hook capacity button to increase hook capacity
             if (money >= hookUpgradeCost) {
                 money -= hookUpgradeCost;
                 setHookCapacity(hookCapacityIncreaseAmount);
@@ -295,19 +312,35 @@ public class Game extends Application {
         });
 
     }
-
+    /**
+     * Increases the current depth by depthIncreaseAmount
+     * 
+     * @param depthIncreaseAmount the amount to increase the depth by
+    **/
     public void setDepth(double depthIncreaseAmount) {
+
         if (depth + depthIncreaseAmount != maxDepth) {
             depth += depthIncreaseAmount;
         }
     }
 
+    /**
+     * Increases the hook capacity by hookCapacityIncreaseAmount
+     * 
+     * @param hookCapacityIncreaseAmount the amount to increase the hook capacity by
+    **/
     public void setHookCapacity(int hookCapacityIncreaseAmount) {
         if (hookCapacity + hookCapacityIncreaseAmount != maxHookCapacity) {
             hookCapacity += hookCapacityIncreaseAmount;
         }
     }
 
+    /**
+     * Spawns the fish for the game
+     * 
+     * @param fishArray the array of fish to spawn
+     * @param parent the background pane to add the children to
+    **/
     public void spawnFish(ArrayList<Fish> fishArray, Pane parent){
         int counter = 0;
         for (Fish fishType : fishArray){
@@ -334,6 +367,7 @@ public class Game extends Application {
                 fishType.setLegendary(true);
             }
 
+            // Strictly set all collisions for the different sizes/shapes of fish
             if (fishType.species.equals("Salmon")) {
                 fishType.topOfFish = fishType.depth + 6;
                 fishType.bottomOfFish = fishType.depth + fishImg.getHeight() - 7;
