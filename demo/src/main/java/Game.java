@@ -18,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -46,6 +47,7 @@ public class Game extends Application {
     int money = 0;
     Text moneyText = new Text("Money: $0");
     Font statFont = new Font("Comic Sans MS", 40);
+    Font buttonFont = new Font("Comic Sans MS", 12);
 
     Text fishStorage;
     FishingTranslateTransition upTransition;
@@ -81,10 +83,13 @@ public class Game extends Application {
         }
 
         // Circle and buttons
-        Circle circle = new Circle(50, 50, 50, Color.ORANGE);
-        Button startButton = new Button("Start Game!");
-        Button depthUpgradeButton = new Button("Depth ($" + depthUpgradeCost + ")");
-        Button hookCapacityUpgradeButton = new Button("Hook Cap ($" + hookUpgradeCost + ")");
+        Circle startCircle = new Circle(50, 50, 50, Color.ORANGE);
+        Text startText = new Text("Start Game!");
+        Text depthText = new Text("Depth ($" + depthUpgradeCost + ")");
+        Text hookCapacityText = new Text("Hook Cap ($" + hookUpgradeCost + ")");
+        startText.setFont(buttonFont);
+        depthText.setFont(buttonFont);
+        hookCapacityText.setFont(buttonFont);
         double depthIncreaseAmount = 50.0;
         int hookCapacityIncreaseAmount = 2;
 
@@ -117,12 +122,12 @@ public class Game extends Application {
         fishingLine.setStroke(Color.WHITE);
 
         Pane backgroundPane = new Pane(bgIV, fishermanIV, fishingLine); // background moves up and down
-        Pane gameObjectsPane = new Pane(hookIV, circle, startButton); // other things on the screen
+        Pane gameObjectsPane = new Pane(hookIV, startCircle, startText); // other things on the screen
         Pane gamePane = new Pane(backgroundPane, gameObjectsPane, statText, moneyText, fishStorage);
         Circle depthCircle = new Circle(50.0, Color.ORANGE);
-        Circle hookCapCircle = new Circle(50.0, Color.ORANGE);
-        Pane depthPane = new Pane(depthCircle, depthUpgradeButton);
-        Pane hookCapPane = new Pane(hookCapCircle, hookCapacityUpgradeButton);
+        Circle hookCapacityCircle = new Circle(50.0, Color.ORANGE);
+        Pane depthPane = new Pane(depthCircle, depthText);
+        Pane hookCapPane = new Pane(hookCapacityCircle, hookCapacityText);
         HBox upgradeButtons = new HBox(depthPane, hookCapPane);
 
         spawnFish(fishArray, backgroundPane);
@@ -131,17 +136,14 @@ public class Game extends Application {
 
         gameObjectsPane.setLayoutY(400.0);
 
-        startButton.layoutXProperty().bind(circle.centerXProperty().subtract(startButton.widthProperty().divide(2)));
-        startButton.layoutYProperty().bind(circle.centerYProperty().subtract(startButton.heightProperty().divide(2)));
+        startText.layoutXProperty().bind(startCircle.centerXProperty().subtract(startText.getLayoutBounds().getWidth()/2));
+        startText.layoutYProperty().bind(startCircle.centerYProperty().add(startText.getLayoutBounds().getHeight()/4));
 
-        depthUpgradeButton.layoutXProperty().bind(
-        depthCircle.centerXProperty().subtract(depthUpgradeButton.widthProperty().divide(2)));
-        depthUpgradeButton.layoutYProperty().bind(
-        depthCircle.centerYProperty().subtract(depthUpgradeButton.heightProperty().divide(2)));
-        hookCapacityUpgradeButton.layoutXProperty().bind(
-        hookCapCircle.centerXProperty().subtract(hookCapacityUpgradeButton.widthProperty().divide(2)));
-        hookCapacityUpgradeButton.layoutYProperty().bind(
-        hookCapCircle.centerYProperty().subtract(hookCapacityUpgradeButton.heightProperty().divide(2)));
+        depthText.layoutXProperty().bind(depthCircle.centerXProperty().subtract(depthText.getLayoutBounds().getWidth()/2));
+        depthText.layoutYProperty().bind(depthCircle.centerYProperty().add(depthText.getLayoutBounds().getHeight()/4));
+
+        hookCapacityText.layoutXProperty().bind(hookCapacityCircle.centerXProperty().subtract(hookCapacityText.getLayoutBounds().getWidth()/2));
+        hookCapacityText.layoutYProperty().bind(hookCapacityCircle.centerYProperty().add(hookCapacityText.getLayoutBounds().getHeight()/4));
 
         BorderPane root = new BorderPane();
         root.setCenter(gamePane);
@@ -161,10 +163,10 @@ public class Game extends Application {
         fishingLine.setEndY(gameObjectsPane.getLayoutY() + gameObjectsPane.getMaxHeight() + 2.5 - hookImg.getHeight()/4);
 
         // Button click moves background up and back down
-        startButton.setOnMouseClicked(e -> {
+        startCircle.setOnMouseClicked(e -> {
             scene.getRoot().requestFocus();
-            startButton.setVisible(false);
-            circle.setVisible(false);
+            startText.setVisible(false);
+            startCircle.setVisible(false);
             upgradeButtons.setVisible(false);
             statText.setVisible(false);
             fishStorage.setVisible(true);
@@ -218,9 +220,8 @@ public class Game extends Application {
             });
             upTransition.setOnFinished(event -> {
                 ft.stop();
-                circle.setVisible(true);
-                startButton.setVisible(true);
-                startButton.requestFocus();
+                startCircle.setVisible(true);
+                startText.setVisible(true);
                 upgradeButtons.setVisible(true);
                 statText.setVisible(true);
                 hookIV.setLayoutX(-15.0);
@@ -245,26 +246,26 @@ public class Game extends Application {
             downTransition.play();
         });
 
-        depthUpgradeButton.setOnMouseClicked(e -> {
+        depthCircle.setOnMouseClicked(e -> {
             if (money >= depthUpgradeCost) {
                 money -= depthUpgradeCost;
                 setDepth(depthIncreaseAmount);
                 depthUpgradeCost = (int) Math.round(depthUpgradeCost * 1.5);
                 statText.setText("Max Depth: "+depth+" \nHook Capacity: "+hookCapacity+" Fish");
                 updateMoneyText();
-                updateUpgradeButtonLabels(depthUpgradeButton, hookCapacityUpgradeButton);
+                updateUpgradeButtonLabels(depthText, hookCapacityText);
             }
         });
 
 
-        hookCapacityUpgradeButton.setOnMouseClicked(e -> {
+        hookCapacityCircle.setOnMouseClicked(e -> {
             if (money >= hookUpgradeCost) {
                 money -= hookUpgradeCost;
                 setHookCapacity(hookCapacityIncreaseAmount);
                 hookUpgradeCost = (int) Math.round(hookUpgradeCost * 1.5);
                 statText.setText("Max Depth: "+depth+" \nHook Capacity: "+hookCapacity+" Fish");
                 updateMoneyText();
-                updateUpgradeButtonLabels(depthUpgradeButton, hookCapacityUpgradeButton);
+                updateUpgradeButtonLabels(depthText, hookCapacityText);
             }
         });
 
@@ -284,7 +285,6 @@ public class Game extends Application {
 
     public void spawnFish(ArrayList<Fish> fishArray, Pane parent){
         for (Fish fishType : fishArray){
-
             double maxLivingDepth = fishType.getMaxLivingDepth();
             double minLivingDepth = fishType.getMinLivingDepth();
 
@@ -393,9 +393,9 @@ public class Game extends Application {
         fishStorage.toFront();
     }
 
-    public void updateUpgradeButtonLabels(Button depthUpgradeButton, Button hookCapacityUpgradeButton) {
-        depthUpgradeButton.setText("Depth ($" + depthUpgradeCost + ")");
-        hookCapacityUpgradeButton.setText("Hook Cap ($" + hookUpgradeCost + ")");
+    public void updateUpgradeButtonLabels(Text depthText, Text hookCapacityText) {
+        depthText.setText("Depth ($" + depthUpgradeCost + ")");
+        hookCapacityText.setText("Hook Cap ($" + hookUpgradeCost + ")");
     }
 
     public static void main(String[] args) {
