@@ -58,7 +58,7 @@ public class Fish{
 
     public int getReward(){
         if(this.isLegendary){
-            return this.reward * 5;
+            return this.reward * 2;
         }
         return this.reward;
     }

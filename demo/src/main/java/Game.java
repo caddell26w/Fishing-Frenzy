@@ -4,7 +4,6 @@ import javafx.animation.Animation.Status;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.effect.Bloom;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Effect;
@@ -22,8 +21,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -51,7 +50,7 @@ public class Game extends Application {
     int money = 0;
     Text moneyText = new Text("Money: $0");
     Font statFont = new Font("Comic Sans MS", 40);
-    Font buttonFont = new Font("Comic Sans MS", 12);
+    Font buttonFont = Font.font("Comic Sans MS", FontWeight.BOLD, 12);
 
     Text fishStorage;
     FishingTranslateTransition upTransition;
@@ -326,23 +325,23 @@ public class Game extends Application {
                 fishType.setLegendary(true);
             }
 
-            if (fishType.species == "Salmon") {
+            if (fishType.species.equals("Salmon")) {
                 fishType.topOfFish = fishType.depth + 6;
                 fishType.bottomOfFish = fishType.depth + fishImg.getHeight() - 7;
             }
-            else if (fishType.species == "Tuna") {
+            else if (fishType.species.equals("Tuna")) {
                 fishType.topOfFish = fishType.depth + 10.5;
                 fishType.bottomOfFish = fishType.depth + fishImg.getHeight() - 12;
             }
-            else if (fishType.species == "Angler Fish") {
+            else if (fishType.species.equals("Angler Fish")) {
                 fishType.topOfFish = fishType.depth + 5;
                 fishType.bottomOfFish = fishType.depth + fishImg.getHeight() - 5;
             }
-            else if (fishType.species == "Butterfly Fish") {
+            else if (fishType.species.equals("Butterfly Fish")) {
                 fishType.topOfFish = fishType.depth + 1;
                 fishType.bottomOfFish = fishType.depth + fishImg.getHeight();
             }
-            else if (fishType.species == "Yellow Tang") {
+            else if (fishType.species.equals("Yellow Tang")) {
                 fishType.topOfFish = fishType.depth + 5;
                 fishType.bottomOfFish = fishType.depth + fishImg.getHeight() - 4;
             }
