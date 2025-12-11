@@ -1,6 +1,6 @@
-# Fishing Frenzy
+# Fishing Frenzy (JavaFX Game)
 
-## Program Overview:
+## 1. Program Overview:
 ### Description:
 Fishing Frenzy is a game built in Node.js using JavaFX. In this game, your main objective is to catch as many fish as possible, become rich, and prove your worth in the world of fishing. You're able to progress through the game using upgrades to your depth and hook capacity, which allow you to catch rarer and more fish. When actively fishing, you can move your hook by using (A, D, &larr;, &rarr;, or clicking and dragging with your mouse.)
 ### Intended Audience:
@@ -9,7 +9,7 @@ Fishing Frenzy is a game made for those of us that enjoy fishing or have an enjo
 ### Highlights:
 Fishing Frenzy is a game that can be run on all computers from anywhere in the world. The game allows a wide variety of people to have something to enjoy in their free time and truly take a break from the world around them.
 
-## Feature List:
+## 2. Feature List:
 - Implement mouse event handlers :heavy_check_mark:
 - Implement button event handlers :heavy_check_mark:
 - Create upgrade buttons :heavy_check_mark:
@@ -26,13 +26,15 @@ Fishing Frenzy is a game that can be run on all computers from anywhere in the w
 - Implement a maximum depth for the hook, and make it so that the farther down the line goes, the more valuable the fish gets :heavy_check_mark:
 - Add simple designs to the fish, boat, fisherman, and backdrop to create a vivid game environment. :heavy_check_mark:
 
-## Known Bugs/Limitations:
+## 3. Known Bugs/Limitations:
 - Collisions are detected as a box around both the fish and the hook so they're not exactly perfect when detecting a collision
 - The maximum depth is a result of the size of the background image and can only be changed if the image is extended  
 
-## Step-by-Step User Guide:
+## 4. Step-by-Step User Guide:
 ### Launching the Game:
-- Download the Game via a .zip file
+- Download the Full JDK (JDK 21 LTS) for your operating system on [BellSoft](https://bell-sw.com/pages/downloads/#jdk-21-lts)
+- Once downloaded, open up the installer and follow the prompts
+- Download the game via a .zip file
 - Unzip the contents of the file
 - Navigate in your terminal or command prompt to the Fishing Frenzy folder
   - Using `cd` to navigate up a directory
@@ -77,9 +79,13 @@ Fishing Frenzy is a game that can be run on all computers from anywhere in the w
 - **Collisions** <br>
   Uses calculated bounds around each respective fish to generate a "box" that is used to detect when the hook has crossed into it.
 
-## Assets:
+## 5. Assets:
 - [Anglerfish](https://opengameart.org/content/anglerfish)
 - [Butterfly Fish](https://www.pinterest.com/pin/pixel-art-fish-design--487585097161705344/)
 - [Salmon](https://www.vecteezy.com/vector-art/27711801-a-single-fish-in-pixel-art-style)
 - [Tuna](https://www.freepik.com/premium-vector/tuna-fish-icon-pixel-art-illustration-8-bit_33501191.htm)
 - [Yellow Tang](https://www.freepik.com/premium-vector/pixel-art-puffer-fish-design_250779490.htm)
+
+## 6. Authors:
+- Jackson Bizzell @J-Bizzy
+- Wesley Caddell @caddell26w/@caddellw
