@@ -38,18 +38,11 @@ public class FishTranslateTransition extends Transition {
 
     @Override
     protected void interpolate(double frac) {
-        System.out.println(this.iv.getTranslateX());
         if (this.iv.getTranslateX() == 500) {
             this.iv.setScaleX(-1);
-            if (this.endX == 500 && this.startX != 225) {
-                this.startX = 225;
-            }
         }
         else if(this.iv.getTranslateX() == 225) {
             this.iv.setScaleX(1);
-            if (this.endX == 225 && this.startX != 500) {
-                this.startX = 500;
-            }
         }
         double currentX = startX + (endX - startX) * frac;
         this.iv.setTranslateX(currentX);

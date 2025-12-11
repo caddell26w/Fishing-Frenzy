@@ -235,7 +235,7 @@ public class Game extends Application {
                     }
                 }
                 updateMoneyText();
-                if (gamePane.getChildren().size() == 4) { //Update if elements are added to gamePane -> Prevents upgrade buttons from being added multiple times
+                if (gamePane.getChildren().size() == 5) { //Update if elements are added to gamePane -> Prevents upgrade buttons from being added multiple times
                     gamePane.getChildren().add(upgradeButtons);
                     upgradeButtons.setSpacing(110.0);
                     upgradeButtons.setLayoutX(295);
@@ -328,21 +328,35 @@ public class Game extends Application {
             parent.getChildren().add(fishIV);
             //parent.getChildren().add(line);
 
-            FishTranslateTransition fish = new FishTranslateTransition(Duration.seconds(2), fishIV, fishImg, fishType);
+            FishTranslateTransition fish = new FishTranslateTransition(Duration.seconds((Math.random() * 1.5) + 2), fishIV, fishImg, fishType);
 
             if (startOnLeft) {
-                // fish.setStartX(225);
-                fish.setStartX(225);
+                double startX = Math.random() * ((500-225)/2) + 225;
+                fish.setStartX(startX);
                 fish.setEndX(500);
             }
             else {
-                fish.setStartX(500);
+                double startX = 500 - Math.random() * ((500-225)/2);
+                fish.setStartX(startX);
                 fish.setEndX(225);
                 fishIV.setScaleX(-1);
             }
 
+            fish.setOnFinished (event -> {
+                if (fish.getStartX() < 362.5) {
+                    fish.setStartX(500);
+                    fish.setEndX(225);
+                }
+                else if (fish.getStartX() > 362.5) {
+                    fish.setStartX(225);
+                    fish.setEndX(500);
+                }
+                fish.setCycleCount(TranslateTransition.INDEFINITE);
+                fish.play();
+            });
 
-            fish.setCycleCount(TranslateTransition.INDEFINITE);
+
+            fish.setCycleCount(1);
             fish.setAutoReverse(true);
             fish.play();
         }
